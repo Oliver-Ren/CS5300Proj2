@@ -12,13 +12,14 @@ import org.apache.hadoop.mapreduce.Reducer.Context;
 
 
 public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition, IntWritable, Node> {
-
+	public final static double DAMPING_FACTOR = 0.85;
 	
 	 public void reduce(IntWritable key, Iterator<NodeOrBoundaryCondition> values, OutputCollector<IntWritable, Node> output,Context context)
 				throws IOException, InterruptedException {
 		 
 		
 		 HashMap<Integer, Node> nodeTable=new HashMap<Integer, Node>();
+		 HashMap<Integer, Double> n2PR=new HashMap<Integer, Double>();
 		NodeOrBoundaryCondition nodeOrBoundaryCondition;
 		 HashMap<Integer,ArrayList<Integer>> BConditions=new HashMap<Integer,ArrayList<Integer>>();
 		 while(values.hasNext()){
@@ -26,8 +27,18 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 			 nodeOrBoundaryCondition=values.next();
 			 if(nodeOrBoundaryCondition.isNode()){
 				 nodeTable.put(nodeOrBoundaryCondition.getNode().nodeid, nodeOrBoundaryCondition.getNode());
+				 while(nodeOrBoundaryCondition.getNode().iterator().hasNext()){
+					 
+				 }
+				 
 			 }
 			 else{
+				 if(!n2PR.containsKey(nodeOrBoundaryCondition.getBoundaryCondition().fromNodeID)){
+					 
+					 n2PR.put(nodeOrBoundaryCondition.getBoundaryCondition().fromNodeID, nodeOrBoundaryCondition.getBoundaryCondition().pageRank);
+				 }
+				 
+				 
 				 
 				 if(BConditions.containsKey(nodeOrBoundaryCondition.getBoundaryCondition().toNodeID)){
 					 BConditions.get(nodeOrBoundaryCondition.getBoundaryCondition().toNodeID).add(nodeOrBoundaryCondition.getBoundaryCondition().fromNodeID);
@@ -36,7 +47,7 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 					 ArrayList<Integer> fromNodes=new ArrayList<Integer>();
 					 fromNodes.add(nodeOrBoundaryCondition.getBoundaryCondition().fromNodeID);
 					 BConditions.put(nodeOrBoundaryCondition.getBoundaryCondition().toNodeID,fromNodes);
-				 }
+				 } 
 				 
 				 
 			 }
@@ -44,6 +55,44 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 		 }
 		 
 		 
+		 
+		for(int i=0; i<3; i++){
+			for(Node n: nodeTable.values()){
+				if(n.getBlockID()==key.get()){
+					n.nextPageRank=0;
+				}
+			}
+			
+			for(Node n: nodeTable.values()){
+				for(Node u:nodeTable.values()){
+				if(n.getBlockID()==key.get() && u.getBlockID()==key.get()){
+					n.nextPageRank += u.pageRank/u.outgoing.length;
+					
+				}
+				}
+				
+				if(BConditions.containsKey(n.nodeid)){
+					for(Integer u: BConditions.get(n.nodeid)){
+						
+						n.nextPageRank += n2PR.get(u);
+					}
+					
+				}
+				n.nextPageRank=DAMPING_FACTOR*n.nextPageRank+(1-DAMPING_FACTOR);
+			}
+			
+			
+			for(Node n: nodeTable.values()){
+				if(n.getBlockID()==key.get()){
+					n.pageRank=n.nextPageRank;
+					n.nextPageRank=0;
+				}
+			}
+			
+			
+			
+			
+		}
 		 
 		 
 		 

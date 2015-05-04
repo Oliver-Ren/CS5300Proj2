@@ -4,10 +4,11 @@ import org.apache.hadoop.io.Writable;
 
 public class Node implements Iterable<Integer>, Writable{
     int nodeid;
+    int blockID;
     double pageRank;
     double nextPageRank;
     int[] outgoing;
-    int blockID;
+    
 
     //Here for internal Hadoop purposes only. Don't use this constructor!
     public Node() {
@@ -81,7 +82,9 @@ public class Node implements Iterable<Integer>, Writable{
     //Describes how to write this node across a network
     public void write(DataOutput out) throws IOException {
 	out.writeInt(nodeid);
+	out.writeInt(blockID);
 	out.writeDouble(pageRank);
+	out.writeDouble(nextPageRank);
 	for(int n : outgoing) {
 	    out.writeInt(n);
 	}
@@ -92,7 +95,9 @@ public class Node implements Iterable<Integer>, Writable{
     //Describes how to read this node from across a network
     public void readFields(DataInput in) throws IOException {
 	nodeid = in.readInt();
+	blockID = in.readInt();
 	pageRank = in.readDouble();
+	nextPageRank = in.readDouble();
 	int next = in.readInt();
 	ArrayList<Integer> ins = new ArrayList<Integer>();
 	while (next != -1) {
@@ -109,7 +114,9 @@ public class Node implements Iterable<Integer>, Writable{
     public String toString() {
 	String retv = "Node {\n";
 	retv += "\tnodeid: " + nodeid + "\n";
+	retv += "\tblockid: " + blockID + "\n";
 	retv += "\tpageRank: " + pageRank + "\n";
+	retv += "\tnextPageRank: " + nextPageRank + "\n";
 	retv += "\toutgoing: ";
 	String out = "";
 	for(int n : outgoing) out += "" + n + ",";

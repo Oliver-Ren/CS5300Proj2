@@ -2,27 +2,26 @@ import org.apache.hadoop.io.Writable;
 import java.io.*;
 
 // Node + Integer (Either Node Integer, in Haskell)
-public class NodeOrDouble implements Writable{
+public class NodeOrBoundaryCondition implements Writable{
     private Node n;
-    private Double d;
+    private BoundaryCondition b;
     private boolean is_node;
 
     //Used for internal Hadoop purposes only. 
     //Do not use this constructor!
-    public NodeOrDouble() {
+    public NodeOrBoundaryCondition() {
 	is_node = false;
-	d = -1.0;
     }
 
     //Construct a NodeOrDouble that is a node.
-    public NodeOrDouble(Node n) {
+    public NodeOrBoundaryCondition(Node n) {
 	this.n = n;
 	is_node = true;
     }
     
     //Construct a NodeOrDouble that is a Double
-    public NodeOrDouble(Double d) {
-	this.d = d;
+    public NodeOrBoundaryCondition(BoundaryCondition b) {
+	this.b = b;
 	is_node = false;
     }
 
@@ -41,9 +40,9 @@ public class NodeOrDouble implements Writable{
     
     //If this is a Double, return it.
     //Otherwise, return null
-    public Double getDouble() {
+    public BoundaryCondition getBoundaryCondition() {
 	if(isNode()) return null;
-	return d;
+	return b;
     }
 
     //Used for internal Hadoop purposes only
@@ -54,7 +53,7 @@ public class NodeOrDouble implements Writable{
 	    n.write(out);
 	}
 	else {
-	    out.writeDouble(d);
+		b.write(out);
 	}
     }
 
@@ -66,7 +65,8 @@ public class NodeOrDouble implements Writable{
 	    n = new Node(-1); //just to avoid errors --- wish this was static
 	    n.readFields(in);
 	} else {
-	    d = in.readDouble();
+		b = new BoundaryCondition(-1);
+	    b.readFields(in);
 	}
     }
 }

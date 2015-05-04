@@ -9,7 +9,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
 
-public class BlockedReducer extends Reducer<IntWritable, NodeOrDouble, IntWritable, Node> {
+public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition, IntWritable, Node> {
 
 	
 	 public void reduce(IntWritable key, Iterator<EdgeOrCondition> values, OutputCollector<IntWritable, Node> output,Context context)

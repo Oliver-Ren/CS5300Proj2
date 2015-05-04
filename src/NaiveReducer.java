@@ -7,10 +7,10 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.util.*;
 
-public class NaiveReducer extends Reducer<IntWritable, NodeOrDouble, IntWritable, Node> {
+public class NaiveReducer extends Reducer<IntWritable, NodeOrBoundaryCondition, IntWritable, Node> {
 	public final static double DAMPING_FACTOR = 0.85;
 	
-    public void reduce(IntWritable key, Iterable<NodeOrDouble> values, Context context)
+    public void reduce(IntWritable key, Iterable<NodeOrBoundaryCondition> values, Context context)
 	throws IOException, InterruptedException {
     	
     	String sizeString = context.getConfiguration().get("size");
@@ -21,7 +21,7 @@ public class NaiveReducer extends Reducer<IntWritable, NodeOrDouble, IntWritable
     	Node currentNode = null;
     	double pagerank = 0.0;
     	double residual = 0.0;
-    	for (NodeOrDouble value : values) {
+    	for (NodeOrBoundaryCondition value : values) {
     		// if the value is a node, i.e. the node is the node self passed from
     		// mapper. then we could assign it's outgoing to the current node.
     		if (value.isNode()) {

@@ -26,9 +26,7 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 			 nodeOrBoundaryCondition=values.next();
 			 if(nodeOrBoundaryCondition.isNode()){
 				 nodeTable.put(nodeOrBoundaryCondition.getNode().nodeid, nodeOrBoundaryCondition.getNode());
-				 while(nodeOrBoundaryCondition.getNode().iterator().hasNext()){
-					 
-				 }
+
 				 
 			 }
 			 else{

@@ -13,7 +13,7 @@ import org.apache.hadoop.mapreduce.Reducer.Context;
 public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition, IntWritable, Node> {
 	public final static double DAMPING_FACTOR = 0.85;
 	public final static int N=BlockPartition.getGraphSize();
-	 public void reduce(IntWritable key, Iterator<NodeOrBoundaryCondition> values, OutputCollector<IntWritable, Node> output,Context context)
+	 public void reduce(IntWritable key, Iterator<NodeOrBoundaryCondition> values,Context context)
 				throws IOException, InterruptedException {
 		 
 		
@@ -53,7 +53,8 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 			 	 
 		 }
 		 
-		 
+		 HashMap<Integer, Node> originTable = (HashMap<Integer, Node>)nodeTable.clone();
+		 Double err=Double.MAX_VALUE;
 		 /*
 		  * Iterate block for 3 times
 		  */
@@ -66,7 +67,7 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 			
 			/* my version. */
 			for (Node n : nodeTable.values()) {
-				Iterator outGoing = n.iterator();
+				Iterator<Integer> outGoing = n.iterator();
 				while (outGoing.hasNext()) {
 					int endNodeID = (int)outGoing.next();
 					if (n.getBlockID() == BlockPartition.getBlockID(endNodeID)) {
@@ -124,6 +125,9 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 				
 			}
 			
+			for(Node n:nodeTable.values()){
+				err+=Math.abs(n.pageRank-originTable.get(n.nodeid).pageRank)/n.pageRank;
+			}
 			
 			
 			

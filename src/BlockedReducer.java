@@ -52,11 +52,12 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 		 }
 		 
 		 HashMap<Integer, Node> originTable = (HashMap<Integer, Node>)nodeTable.clone();
-		 Double err=Double.MAX_VALUE;
+		 Double residual=Double.MAX_VALUE;
 		 /*
-		  * Iterate block for 3 times
+		  * until residual<0.001
 		  */
-		for(int i=0; i<3; i++){
+		while(residual>0.001){
+			residual=0.0;
 			for(Node n: nodeTable.values()){
 				
 					n.nextPageRank=0;
@@ -124,7 +125,7 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 			}
 			
 			for(Node n:nodeTable.values()){
-				err+=Math.abs(n.pageRank-originTable.get(n.nodeid).pageRank)/n.pageRank;
+				residual+=Math.abs(n.pageRank-originTable.get(n.nodeid).pageRank)/n.pageRank;
 			}
 			
 			

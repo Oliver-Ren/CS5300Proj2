@@ -55,7 +55,9 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 		 }
 		 
 		 
-		 
+		 /*
+		  * Iterate block for n times
+		  */
 		for(int i=0; i<3; i++){
 			for(Node n: nodeTable.values()){
 				if(n.getBlockID()==key.get()){
@@ -95,44 +97,21 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 		}
 		 
 		 
+		
+		for(Node n:nodeTable.values()){
+			if(n.getBlockID()==key.get()){
+				
+				context.write(key, n);
+				
+			}
+			
+		}
 		 
 		 
 		 
 		 
 		 
 	 }
-	
-	
-	
-	
-	
-	
-	
-	/*void IterateBlockOnce(B) {
-	    for( v ∈ B ) { NPR[v] = 0; }
-	    for( v ∈ B ) {
-	        for( u where <u, v> ∈ BE ) {
-	            NPR[v] += PR[u] / deg(u);
-	        }
-	        for( u, R where <u,v,R> ∈ BC ) {
-	            NPR[v] += R;
-	        }
-	        NPR[v] = d*NPR[v] + (1-d)/N;
-	    }
-	    for( v ∈ B ) { PR[v] = NPR[v]; }
-	}*/
-	
-	void IterateBlockOnce(){
-		
-		
-		
-		
-	}
-	
-	
-	
-	
-	
 	
 	
 	

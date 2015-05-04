@@ -74,8 +74,8 @@ public class PageRank {
 		job.setMapOutputKeyClass(IntWritable.class);
 		job.setMapOutputValueClass(NodeOrBoundaryCondition.class);
 
-		job.setMapperClass(NaiveMapper.class);
-		job.setReducerClass(NaiveReducer.class);
+		job.setMapperClass(BlockedMapper.class);
+		job.setReducerClass(BlockedReducer.class);
 
 		return job;
 	}

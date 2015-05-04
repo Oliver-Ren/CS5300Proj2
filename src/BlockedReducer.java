@@ -64,7 +64,33 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 				
 			}
 			
-			for(Node n: nodeTable.values()){
+			/* my version. */
+			for (Node n : nodeTable.values()) {
+				Iterator outGoing = n.iterator();
+				while (outGoing.hasNext()) {
+					int endNodeID = (int)outGoing.next();
+					if (n.getBlockID() == BlockPartition.getBlockID(endNodeID)) {
+						nodeTable.get(endNodeID).nextPageRank+=n.pageRank/n.outgoingSize();
+					}
+				}
+				
+				if(BConditions.containsKey(n.nodeid)){
+					for(Integer u: BConditions.get(n.nodeid)){
+						
+						n.nextPageRank += n2PR.get(u);
+					}
+					
+				}
+				
+				
+			}
+			for (Node n : nodeTable.values()) {
+				
+				n.nextPageRank=DAMPING_FACTOR*n.nextPageRank+(1-DAMPING_FACTOR)/N;
+			}
+			
+			/* orignia version. */
+/*			for(Node n: nodeTable.values()){
 					for(Node u:nodeTable.values()){
 					
 					
@@ -86,6 +112,9 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 				}
 				n.nextPageRank=DAMPING_FACTOR*n.nextPageRank+(1-DAMPING_FACTOR)/N;
 			}
+			*/
+			
+			
 			
 			
 			for(Node n: nodeTable.values()){

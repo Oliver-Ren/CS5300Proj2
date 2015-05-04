@@ -56,7 +56,7 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 		 
 		 
 		 /*
-		  * Iterate block for n times
+		  * Iterate block for 3 times
 		  */
 		for(int i=0; i<3; i++){
 			for(Node n: nodeTable.values()){
@@ -66,13 +66,14 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 			}
 			
 			for(Node n: nodeTable.values()){
-				for(Node u:nodeTable.values()){
-				if(n.getBlockID()==key.get() && u.getBlockID()==key.get()){
-					n.nextPageRank += u.pageRank/u.outgoing.length;
+				while(n.iterator().hasNext()){
+					int u=n.iterator().next();
+					if(nodeTable.get(u).blockID==key.get()){
+						n.nextPageRank += nodeTable.get(u).pageRank/nodeTable.get(u).outgoingSize();
+					}
 					
 				}
-				}
-				
+
 				if(BConditions.containsKey(n.nodeid)){
 					for(Integer u: BConditions.get(n.nodeid)){
 						

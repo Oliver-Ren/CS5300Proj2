@@ -132,11 +132,17 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 			
 		}
 		 
-		 
+		/* post-condition: the residual is less than 0.001. 
+		 * We should add the residual of this block into the 
+		 * global counter. */
+		long magnifiedResidual = (long)(residual * 100000);
+		context.getCounter(CounterType.RESIDUAL_VALUE).increment(magnifiedResidual);
 		
-		for(Node n:nodeTable.values()){
-
-				context.write(key, n);
+		
+		/* emit the result as the <nodeID, Node> pair. */
+		for (Node n:nodeTable.values()) {
+				IntWritable nodeID = new IntWritable(n.nodeid);
+				context.write(nodeID, n);
 
 		}
 		 

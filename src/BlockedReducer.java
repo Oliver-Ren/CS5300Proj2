@@ -128,19 +128,16 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 				residual+=Math.abs(n.pageRank-originTable.get(n.nodeid).pageRank)/n.pageRank;
 			}
 			
-			
+			residual=residual/nodeTable.size();
 			
 		}
 		 
 		 
 		
 		for(Node n:nodeTable.values()){
-			
-				
+
 				context.write(key, n);
-				
-		
-			
+
 		}
 		 
 		 

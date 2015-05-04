@@ -2,6 +2,8 @@ import java.util.Arrays;
 
 
 public class BlockPartition {
+	/* The the number of nodes in the graph. */
+	private static final int GRAPH_SIZE = 685230;
 	/* The partitioned array for index binary search of the blocks. */
 	private static final int blockPartition[] = {10327, 20372, 30628, 40644, 50461, 60840, 70590, 80117, 90496, 100500, 
 		110566, 120944, 130998, 140573, 150952, 161331, 171153, 181513, 191624, 202003, 
@@ -23,6 +25,14 @@ public class BlockPartition {
 			index = -(index + 1);
 		}
 		return index;
+	}
+	
+	/**
+	 * return the graph size measured by total number of nodes.
+	 * @return
+	 */
+	public static int getGraphSize() {
+		return GRAPH_SIZE;
 	}
 
 

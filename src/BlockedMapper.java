@@ -25,15 +25,10 @@ public class BlockedMapper extends Mapper<IntWritable, Node, IntWritable, NodeOr
 			if (value.getBlockID() == BlockPartition.getBlockID(endNodeID)) {
 				BoundaryCondition boundary 
 				= new BoundaryCondition(value.nodeid, endNodeID, pagerankDistribution);
+				
 				context.write(blockID, new NodeOrBoundaryCondition(boundary));
 			}
 		}
-		
-	
-		
-		
-		
-		
-		
+
 	}
 }

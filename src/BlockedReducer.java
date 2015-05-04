@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -68,7 +67,7 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 			for(Node n: nodeTable.values()){
 					for(Node u:nodeTable.values()){
 					
-					//----------
+					
 						while(u.iterator().hasNext()){
 							int un=u.iterator().next();
 							if(un==n.nodeid){

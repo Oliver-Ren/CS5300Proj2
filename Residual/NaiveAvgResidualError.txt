@@ -1,0 +1,15 @@
+Iteration 0 avg error 0.0
+The stage 0 size is: 685230
+The stage 0 converge?: true
+Iteration 1 avg error 0.0
+The stage 1 size is: 685230
+The stage 1 converge?: true
+Iteration 2 avg error 0.0
+The stage 2 size is: 685230
+The stage 2 converge?: true
+Iteration 3 avg error 0.0
+The stage 3 size is: 685230
+The stage 3 converge?: true
+Iteration 4 avg error 0.0
+The stage 4 size is: 685230
+The stage 4 converge?: true

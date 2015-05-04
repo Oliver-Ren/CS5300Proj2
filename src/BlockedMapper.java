@@ -22,7 +22,7 @@ public class BlockedMapper extends Mapper<IntWritable, Node, IntWritable, NodeOr
 		Iterator itr = value.iterator();
 		while (itr.hasNext()) {
 			int endNodeID = (int)itr.next();
-			if (value.getBlockID() == BlockPartition.getBlockID(endNodeID)) {
+			if (value.getBlockID() != BlockPartition.getBlockID(endNodeID)) {
 				BoundaryCondition boundary 
 				= new BoundaryCondition(value.nodeid, endNodeID, pagerankDistribution);
 				

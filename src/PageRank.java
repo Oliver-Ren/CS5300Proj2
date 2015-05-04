@@ -12,20 +12,20 @@ import org.apache.hadoop.util.*;
 
 
 public class PageRank {
+	static final double EPSILON = 0.001; 
 
 	public static void main(String[] args) throws IOException {
 		PrintWriter writer = new PrintWriter("./Residual/NaiveAvgResidualError.txt", "UTF-8");
 		int numRepititions = 5;
-		double residual = 0;
-		
-		/* the size of the graph is hard coded into the code. */
-		long size = 685230;
-		
+		double globalResidual = 0.0;
+		 
+		boolean shouldTerminate = false;
+			
 		
 		for(int i = 0; i < numRepititions; i++) {
 			Job job;
 
-			job = getNaiveJob(size);
+			job = getBlockedJob();
 
 
 			String inputPath = i == 0 ? "input" : "stage" + (i-1);
@@ -43,16 +43,17 @@ public class PageRank {
 
 			// Set up residual and size
 			Counters counters = job.getCounters();
-			residual = (double)counters.findCounter(CounterType.RESIDUAL_VALUE).getValue() / 100000;
-			writer.println("Iteration " + i + " avg error " + residual / size);
-			writer.println("The stage " + i + "size is: " + size);
-
+			globalResidual = (double)counters.findCounter(CounterType.RESIDUAL_VALUE).getValue() / 100000;
+			
+			shouldTerminate = globalResidual < (BlockPartition.getGraphSize() * EPSILON) ? true : false;
+			writer.println("Iteration " + i + " avg error " + globalResidual / BlockPartition.getGraphSize());
+			writer.println("The stage " + i + " size is: " + BlockPartition.getGraphSize());
+			writer.println("The stage " + i + " converge?: " + shouldTerminate);
 		}
 		writer.close();
 	}
-	public static Job getStandardJob(String s) throws IOException {
+	public static Job getStandardJob() throws IOException {
 		Configuration conf = new Configuration();
-		conf.set("size", s);
 
 		Job job = new Job(conf);
 
@@ -67,9 +68,9 @@ public class PageRank {
 		return job;
 	}
 
-	public static Job getNaiveJob(long s) throws IOException{
+	public static Job getBlockedJob() throws IOException{
 
-		Job job = getStandardJob("" + s);
+		Job job = getStandardJob();
 
 		job.setMapOutputKeyClass(IntWritable.class);
 		job.setMapOutputValueClass(NodeOrBoundaryCondition.class);

@@ -13,7 +13,7 @@ import org.apache.hadoop.mapreduce.Reducer.Context;
 
 public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition, IntWritable, Node> {
 	public final static double DAMPING_FACTOR = 0.85;
-	
+	public final static int N=BlockPartition.getGraphSize();
 	 public void reduce(IntWritable key, Iterator<NodeOrBoundaryCondition> values, OutputCollector<IntWritable, Node> output,Context context)
 				throws IOException, InterruptedException {
 		 
@@ -66,12 +66,16 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 			}
 			
 			for(Node n: nodeTable.values()){
-				while(n.iterator().hasNext()){
-					int u=n.iterator().next();
-					if(nodeTable.get(u).blockID==key.get()){
-						n.nextPageRank += nodeTable.get(u).pageRank/nodeTable.get(u).outgoingSize();
-					}
+					for(Node u:nodeTable.values()){
 					
+					//----------
+						while(u.iterator().hasNext()){
+							int un=u.iterator().next();
+							if(un==n.nodeid){
+								n.nextPageRank += u.pageRank/u.outgoingSize();
+								break;
+							}
+					}
 				}
 
 				if(BConditions.containsKey(n.nodeid)){
@@ -81,7 +85,7 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 					}
 					
 				}
-				n.nextPageRank=DAMPING_FACTOR*n.nextPageRank+(1-DAMPING_FACTOR);
+				n.nextPageRank=DAMPING_FACTOR*n.nextPageRank+(1-DAMPING_FACTOR)/N;
 			}
 			
 			
@@ -100,11 +104,11 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 		 
 		
 		for(Node n:nodeTable.values()){
-			if(n.getBlockID()==key.get()){
+			
 				
 				context.write(key, n);
 				
-			}
+		
 			
 		}
 		 

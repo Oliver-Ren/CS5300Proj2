@@ -23,7 +23,7 @@ public class BoundaryCondition implements Writable {
 		pageRank = -1.0;
 	}
 
-	public BoundaryCondition(int from, int to, int pr) {
+	public BoundaryCondition(int from, int to, double pr) {
 		fromNodeID = from;
 		toNodeID = to;
 		pageRank = pr;

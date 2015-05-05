@@ -56,6 +56,7 @@ public class NodeOrBoundaryCondition implements Writable{
 	}
 	else {
 		b.write(out);
+		
 	}
     }
 
@@ -69,6 +70,7 @@ public class NodeOrBoundaryCondition implements Writable{
 	} else {
 		b = new BoundaryCondition(-1);
 	    b.readFields(in);
+	    
 	}
     }
 }

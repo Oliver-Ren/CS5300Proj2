@@ -14,7 +14,7 @@ public class BlockedMapper extends Mapper<IntWritable, Node, IntWritable, NodeOr
 		IntWritable blockID = new IntWritable(value.getBlockID());
 		context.write(blockID, new NodeOrBoundaryCondition(value));
 		
-		System.out.println("blockID" + blockID);
+		System.out.println("mapper added:" + value.nodeid + " at block " + value.blockID);
 		
 		/* Calculate the page rank the node distributes to every outgoing edge. */
 		double pagerankDistribution = value.getPageRank() / value.outgoingSize();
@@ -29,7 +29,8 @@ public class BlockedMapper extends Mapper<IntWritable, Node, IntWritable, NodeOr
 				BoundaryCondition boundary 
 				= new BoundaryCondition(value.nodeid, endNodeID, pagerankDistribution);
 				
-				context.write(blockID, new NodeOrBoundaryCondition(boundary));
+				IntWritable endNodeBlockID = new IntWritable(BlockPartition.getBlockID(endNodeID));
+				context.write(endNodeBlockID, new NodeOrBoundaryCondition(boundary));
 			}
 		}
 

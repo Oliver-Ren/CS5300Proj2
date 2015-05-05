@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 
@@ -26,7 +27,7 @@ public class BlockedMapper extends Mapper<IntWritable, Node, IntWritable, NodeOr
 				BoundaryCondition boundary 
 				= new BoundaryCondition(value.nodeid, endNodeID, pagerankDistribution);
 				
-				context.write(blockID, new NodeOrBoundaryCondition(boundary));
+				context.write(blockID, new NodeOrBoundaryCondition(new Text(pagerankDistribution+"#"+value.nodeid+"#"+endNodeID)));
 			}
 		}
 

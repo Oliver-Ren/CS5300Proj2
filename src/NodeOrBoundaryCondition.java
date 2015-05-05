@@ -1,10 +1,12 @@
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
+
 import java.io.*;
 
 // Node + Integer (Either Node Integer, in Haskell)
 public class NodeOrBoundaryCondition implements Writable{
     private Node n;
-    private BoundaryCondition b;
+    private Text b;
     private boolean is_node;
 
     //Used for internal Hadoop purposes only. 
@@ -20,7 +22,7 @@ public class NodeOrBoundaryCondition implements Writable{
     }
     
     //Construct a NodeOrDouble that is a Double
-    public NodeOrBoundaryCondition(BoundaryCondition b) {
+    public NodeOrBoundaryCondition(Text b) {
 	this.b = b;
 	is_node = false;
     }
@@ -40,7 +42,7 @@ public class NodeOrBoundaryCondition implements Writable{
     
     //If this is a Double, return it.
     //Otherwise, return null
-    public BoundaryCondition getBoundaryCondition() {
+    public Text getBoundaryCondition() {
 	if(isNode()) return null;
 	return b;
     }
@@ -65,7 +67,7 @@ public class NodeOrBoundaryCondition implements Writable{
 	    n = new Node(-1); //just to avoid errors --- wish this was static
 	    n.readFields(in);
 	} else {
-		b = new BoundaryCondition(-1);
+		b = new Text("");
 	    b.readFields(in);
 	}
     }

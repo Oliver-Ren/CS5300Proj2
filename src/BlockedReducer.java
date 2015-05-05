@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -24,26 +25,35 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 		 while(values.hasNext()){
 			 
 			 nodeOrBoundaryCondition=values.next();
+			 
+			 
 			 if(nodeOrBoundaryCondition.isNode()){
 				 nodeTable.put(nodeOrBoundaryCondition.getNode().nodeid, nodeOrBoundaryCondition.getNode());
 
 				 
 			 }
 			 else{
-				 if(!n2PR.containsKey(nodeOrBoundaryCondition.getBoundaryCondition().fromNodeID)){
+				 Text t=nodeOrBoundaryCondition.getBoundaryCondition();
+				 
+				 String[] conditionStr=t.toString().split("#");
+				 Double pageRank=Double.parseDouble(conditionStr[0]);
+				 Integer from=Integer.parseInt(conditionStr[1]);
+				 Integer to=Integer.parseInt(conditionStr[0]);
+				 
+				 if(!n2PR.containsKey(from)){
 					 
-					 n2PR.put(nodeOrBoundaryCondition.getBoundaryCondition().fromNodeID, nodeOrBoundaryCondition.getBoundaryCondition().pageRank);
+					 n2PR.put(from, pageRank);
 				 }
 				 
 				 
 				 
-				 if(BConditions.containsKey(nodeOrBoundaryCondition.getBoundaryCondition().toNodeID)){
-					 BConditions.get(nodeOrBoundaryCondition.getBoundaryCondition().toNodeID).add(nodeOrBoundaryCondition.getBoundaryCondition().fromNodeID);
+				 if(BConditions.containsKey(to)){
+					 BConditions.get(to).add(from);
 				 }
 				 else{
 					 ArrayList<Integer> fromNodes=new ArrayList<Integer>();
-					 fromNodes.add(nodeOrBoundaryCondition.getBoundaryCondition().fromNodeID);
-					 BConditions.put(nodeOrBoundaryCondition.getBoundaryCondition().toNodeID,fromNodes);
+					 fromNodes.add(from);
+					 BConditions.put(to,fromNodes);
 				 } 
 				 
 				 

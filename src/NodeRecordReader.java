@@ -58,7 +58,7 @@ public class NodeRecordReader extends RecordReader<IntWritable, Node> {
 	} else {//Otherwise, there aren't any, so we use a 0-size array
 	    outs = new int[0];
 	}
-	
+
 	int nodeId;//attempt to parse the nodeid
 	try {
 	    nodeId = Integer.parseInt(pieces[0]);

@@ -76,6 +76,7 @@ public class NodeRecordReader extends RecordReader<IntWritable, Node> {
 	//we now know we'll succeed
 	curKey = new IntWritable(nodeId);
 	curVal = new Node(nodeId, outs);
+	curVal.setBlockID(BlockPartition.getBlockID(nodeId));
 	curVal.setPageRank(pageRank);
 	
 	return true;

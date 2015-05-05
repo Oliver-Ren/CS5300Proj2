@@ -13,6 +13,7 @@ public class Node implements Iterable<Integer>, Writable{
     //Here for internal Hadoop purposes only. Don't use this constructor!
     public Node() {
 	nodeid = -1;
+	blockID = -1;
 	outgoing = new int[0];
     }
 

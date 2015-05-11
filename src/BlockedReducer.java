@@ -22,12 +22,32 @@ public class BlockedReducer extends Reducer<IntWritable, NodeOrBoundaryCondition
 		HashMap<Integer, Double> n2PR=new HashMap<Integer, Double>();
 		NodeOrBoundaryCondition nodeOrBoundaryCondition;
 		HashMap<Integer,ArrayList<Integer>> BConditions=new HashMap<Integer,ArrayList<Integer>>();
+		HashMap<Integer,ArrayList<Integer>> InComings= new HashMap<Integer, ArrayList<Integer>>();
+		
 		for (NodeOrBoundaryCondition value : values) {
 
 
 			if (value.isNode()) {
 				nodeTable.put(value.getNode().nodeid, value.getNode());
 				//System.out.println("added: " + value.getNode().nodeid);
+				Iterator i=value.getNode().iterator();
+				
+				while(i.hasNext()){
+					
+					Integer ni=((Node)i.next()).nodeid;
+					if (((Node)value.getNode()).getBlockID() == BlockPartition.getBlockID(ni)) {
+					if(!InComings.containsKey(ni)){
+					ArrayList<Integer> tmp=new ArrayList<Integer>();
+					tmp.add(value.getNode().nodeid);
+					InComings.put(ni, tmp);
+
+					}
+					else{
+						InComings.get(ni).add(value.getNode().nodeid);
+					}
+					}
+				}
+				
 			}
 			else{
 				BoundaryCondition boundaryEdge = value.getBoundaryCondition();
